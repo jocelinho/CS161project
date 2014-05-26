@@ -28,7 +28,7 @@ public class CLCSFast {
 
   }
 
-  public static void SingleShortestPathNoBoundary (char[] A, char[] B, int[][] path) {
+  public static void SingleShortestPathNoBoundary(char[] A, char[] B, int[][] path) {
     int m = A.length, n = B.length;
     int i, j;
     for (i = 0; i <= m; i++) arr[i][0] = 0;
@@ -70,32 +70,29 @@ public class CLCSFast {
     for (i = k+m; i < 2*m+1; i++) path[k][i] = n; 
   }
 
-  public static void SingleShortestPath (char[] A, char[] B, int[][] path, int l, int u) {
-    // if ((u-l) <= 1) return;
-    // int mid = (l+u)/2;
-    // path[mid] =
+  public static void SingleShortestPath(char[] A, char[] B, int[][] path, int l, int u) {
+    if ((u-l) <= 1) return;
+    int mid = (l+u)/2;
 
     int m = A.length, n = B.length;
     int i, j;
-    for (i = 0; i <= m; i++) arr[i][0] = 0;
-    for (j = 0; j <= n; j++) arr[0][j] = 0;
+    // for (i = 0; i <= m; i++) arr[i][0] = 0;
+    // for (j = 0; j <= n; j++) arr[0][j] = 0;
     
     for (i = 1; i <= m; i++) {
-      for (j = 1; j <= n; j++) {
+      for (j = path[l][mid+i-1]+1; j <= path[u][mid+i]; j++) {
         arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
         if (A[i-1] == B[j-1]) arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
       }
     }
 
-    // for (int x = 0; x <= m; x++) {
-    //   for (int y = 0; y <= n; y++) {
-    //     System.out.print(arr[x][y]+" ");
-    //   }
-    //   System.out.println();
-    // }
+    for (int x = 0; x <= m; x++) {
+      for (int y = 0; y <= n; y++) {
+        System.out.print(arr[x][y]+" ");
+      }
+      System.out.println();
+    }
 
-    findPath(m, n, 0, path);
-    findPath(m, n, m, path);
   }
 
   public static void main(String[] args) {
@@ -117,6 +114,8 @@ public class CLCSFast {
       System.out.println();
       for (int i = 0; i < 2*m+1; i++) System.out.print(path[m][i] + " ");
       System.out.println();
+
+      SingleShortestPath(A.toCharArray(), B.toCharArray(), path, 0, m);
       // int max_LCS = 0;
       // for (int i = 0; i < A.length(); i++){
       //   int temp = LCS(rotate(A, i).toCharArray(), B.toCharArray());
