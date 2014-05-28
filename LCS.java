@@ -24,10 +24,18 @@ public class LCS {
   public static void main(String[] args) {
     Scanner s = new Scanner(System.in);
     int T = s.nextInt();
-    for (int tc = 0; tc < T; tc++) {
+    for (int tc = 0; tc < 1; tc++) {
       A = s.next().toCharArray();
       B = s.next().toCharArray();
-      System.out.println(LCS());
+      LCS();
+      for (int x = 0; x <= A.length; x++) {
+        for (int y = 0; y <= B.length; y++) {
+          System.out.print(arr[x][y]+" ");
+        }
+        System.out.println();
+      }
+
+      // System.out.println(LCS());
     }
   }
 }
