@@ -48,7 +48,7 @@ public class CLCSFast {
       if (i > 0 && arr[i][j] == arr[i-1][j]) 
         i--;
       else if (j > 0 && arr[i][j] == arr[i][j-1])
-        j--;
+        j--; 
       else {
         i--;
         j--;
@@ -77,28 +77,21 @@ public class CLCSFast {
     for(i = 0; i<m; i++)
       C = C.concat(Character.toString(A[i]));
     C = rotate (C, mid);
-    if (mid == 16)
-    {
+    // if (mid == 16)
+    // {
       System.out.println(C);
-      for (int p = 0; p < 2*m+1; p++) 
-        System.out.print(path[l][p] + " ");
-      System.out.println();
-      for (int p = 0; p < 2*m+1; p++) 
-        System.out.print(path[u][p] + " ");
-      System.out.println();
 
       for (int p = 0; p < 2*m+1; p++) 
         System.out.print(path_s[l][p] + " ");
       System.out.println();
       for (int p = 0; p < 2*m+1; p++) 
-        System.out.print(path_s[u][p] + " ");
+        System.out.print(path[u][p] + " ");
+
       System.out.println();
-    }
-    // for (i = 0; i <= m; i++) arr[i][0] = 0;
-    // for (j = 0; j <= n; j++) arr[0][j] = 0;
+    // }
     
-    if (mid == 16)
-    {
+    // if (mid == 16)
+    // {
       System.out.print("    ");
       for (i = 1; i <= n ; i++)
         System.out.print ("0 ");
@@ -134,40 +127,33 @@ public class CLCSFast {
           System.out.print ("* ");
         System.out.println();
       }
-    }
-    else
-    {
-      for (i = 1; i <= m; i++) {
-        for (j = path[u][mid+i-1]+1; j <= path[l][mid+i]; j++) {
-          if ((j-1) < path[u][mid+i-1]+1)
-            arr[i][j] = arr[i-1][j];
-          else if (j > path[l][mid+i-1])
-            arr[i][j] = arr[i][j-1];
-          else
-            arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
-          if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path[u][mid+i-2]+1 && (j-1) <= path[l][mid+i-1] 
-            || ((j-1) == 0 || (i-1) == 0))) 
-          {
-            arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
-          }
-        }
-      }
-    }
+    // }
+    // else
+    // {
+    //   for (i = 1; i <= m; i++) {
+    //     for (j = path_s[u][mid+i]; j <= path[l][mid+i]; j++) {
+    //       if (j == 0)
+    //         j++;
+    //       if ((j-1) < path_s[u][mid+i])
+    //         arr[i][j] = arr[i-1][j];
+    //       else if (j > path[l][mid+i-1])
+    //         arr[i][j] = arr[i][j-1];
+    //       else
+    //         arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
+    //       if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path_s[u][mid+i-1] && (j-1) <= path[l][mid+i-1] 
+    //         || ((j-1) == 0 || (i-1) == 0))) 
+    //       {
+    //         arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
+    //       }
+    //     }
+    //   }
+    // }
 
 
     if (arr[m][n] > max_CLCS)
       max_CLCS = arr[m][n];
 
     findPath(m, n, mid, path, path_s);
-
-    // if (mid == 5){
-    //   for (int x = 0; x <= m; x++) {
-    //     for (int y = 0; y <= n; y++) {
-    //       System.out.print(arr[x][y]+" ");
-    //     }
-    //     System.out.println();
-    //   }
-    // }
 
   }
 
@@ -184,7 +170,7 @@ public class CLCSFast {
     Scanner s = new Scanner(System.in);
     int T = s.nextInt();
     String A, B;
-    for (int tc = 0; tc < 3; tc++) {
+    for (int tc = 0; tc < 1; tc++) {
       max_CLCS = 0;
       A = s.next();
       B = s.next();
