@@ -1,7 +1,7 @@
 import java.util.*;
 import java.lang.String;
 
-public class CLCSFast {
+public class CLCSFast1 {
   static int arr[][] = new int[2048][2048];
   static int max_CLCS = 0;
   static int lpath[][];
@@ -48,15 +48,11 @@ public class CLCSFast {
     while (!(i == 0 && j == 0)) {
       lpath[k][i+k] = j;
       if (rpath[k][i+k] < 0) rpath[k][i+k] = j;
-      if (i > 0 && arr[i][j] == arr[i-1][j]) {
-        // lpath[k][i+k] = j;
+      if (i > 0 && arr[i][j] == arr[i-1][j]) 
         i--;
-      } 
-        
       else if (j > 0 && arr[i][j] == arr[i][j-1])
         j--;
       else {
-        // lpath[k][i+k] = j;
         i--;
         j--;
       }
@@ -67,14 +63,14 @@ public class CLCSFast {
       lpath[k][i] = 0;
     } 
     if (rpath[k][k] < 0) rpath[k][k] = 0;
-    if (lpath[k][k] < 0) lpath[k][k] = 0;
+    lpath[k][k] = 0;
     for (i = k+m; i < 2*m+1; i++) {
       rpath[k][i] = n; 
       lpath[k][i] = n;
     }
-    // for (int x = 0; x < lpath[k].length; x++)  
-    //   System.out.print(lpath[k][x]+ " ");
-    // System.out.println();
+    for (int x = 0; x < lpath[k].length; x++)  
+      System.out.print(lpath[k][x]+ " ");
+    System.out.println();
 
   }
 
@@ -224,7 +220,7 @@ public class CLCSFast {
       // for (int i = 0; i < 2*m+1; i++) System.out.print(path[m][i] + " ");
       // System.out.println();
 
-      // FindShortestPath(A.toCharArray(), B.toCharArray(), 0, m);
+      FindShortestPath(A.toCharArray(), B.toCharArray(), 0, m);
 
       //  for (int i = 0; i < 2*m+1; i++) System.out.print(path[0][i] + " ");
       // System.out.println();
