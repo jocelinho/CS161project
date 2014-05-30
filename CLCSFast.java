@@ -13,7 +13,7 @@ public class CLCSFast {
 
   }
 
-  public static void SingleShortestPathNoBoundary(char[] A, char[] B, int[][] path) {
+  public static void SingleShortestPathNoBoundary(char[] A, char[] B, int[][] path, int[][] path_s) {
     int m = A.length, n = B.length;
     int i, j;
     for (i = 0; i <= m; i++) arr[i][0] = 0;
@@ -36,13 +36,14 @@ public class CLCSFast {
     //   System.out.println();
     // }
 
-    findPath(m, n, 0, path);
-    findPath(m, n, m, path);
+    findPath(m, n, 0, path, path_s);
+    findPath(m, n, m, path, path_s);
   }
 
-  public static void findPath(int m, int n, int k, int[][] path) {
+  public static void findPath(int m, int n, int k, int[][] path, int[][] path_s) {
     int i = m, j = n;
     while (!(i == 0 && j == 0)) {
+      path_s[k][i+k] = j;
       if (path[k][i+k] < 0) path[k][i+k] = j;
       if (i > 0 && arr[i][j] == arr[i-1][j]) 
         i--;
@@ -53,13 +54,22 @@ public class CLCSFast {
         j--;
       }
     }
-    for (i = 0; i < k; i++) path[k][i] = 0;
+    for (i = 0; i < k; i++) 
+      {
+        path[k][i] = 0;
+        path_s[k][i] = 0;
+      }
     if (path[k][k] < 0) path[k][k] = 0;
-    for (i = k+m; i < 2*m+1; i++) path[k][i] = n; 
+    if (path_s[k][k] < 0) path_s[k][k] = 0;
+    for (i = k+m; i < 2*m+1; i++) 
+      {
+        path[k][i] = n; 
+        path_s[k][i] = n;
+      }
 
   }
 
-  public static void SingleShortestPath(char[] A, char[] B, int[][] path, int l, int u, int mid) {
+  public static void SingleShortestPath(char[] A, char[] B, int[][] path, int[][] path_s, int l, int u, int mid) {
 
     int m = A.length, n = B.length;
     int i, j;
@@ -76,6 +86,13 @@ public class CLCSFast {
       for (int p = 0; p < 2*m+1; p++) 
         System.out.print(path[u][p] + " ");
       System.out.println();
+
+      for (int p = 0; p < 2*m+1; p++) 
+        System.out.print(path_s[l][p] + " ");
+      System.out.println();
+      for (int p = 0; p < 2*m+1; p++) 
+        System.out.print(path_s[u][p] + " ");
+      System.out.println();
     }
     // for (i = 0; i <= m; i++) arr[i][0] = 0;
     // for (j = 0; j <= n; j++) arr[0][j] = 0;
@@ -89,17 +106,21 @@ public class CLCSFast {
       for (i = 1; i <= m; i++) {
         // System.out.println ((path[u][mid+i-1]+1) + " " + path[l][mid+i]);
         System.out.print (C.toCharArray()[i-1] + " 0 ");
-        for (j = 1; j < path[u][mid+i-1]+1 ; j++)
+        for (j = 1; j < path_s[u][mid+i] ; j++)
           System.out.print ("* ");
-        for (j = path[u][mid+i-1]+1; j <= path[l][mid+i]; j++) {
-        // for (j = 1; j <= n; j++) { 
-          if ((j-1) < path[u][mid+i-1]+1)
+
+        // for (j = path[u][mid+i-1]+1; j <= path[l][mid+i]; j++) {
+        for (j = path_s[u][mid+i]; j <= path[l][mid+i]; j++) {
+          if (j == 0)
+            j++;
+
+          if ((j-1) < path_s[u][mid+i])
             arr[i][j] = arr[i-1][j];
           else if (j > path[l][mid+i-1])
             arr[i][j] = arr[i][j-1];
           else
             arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
-          if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path[u][mid+i-2]+1 && (j-1) <= path[l][mid+i-1] 
+          if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path_s[u][mid+i-1] && (j-1) <= path[l][mid+i-1] 
             || ((j-1) == 0 || (i-1) == 0)))
             {
               arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
@@ -137,7 +158,7 @@ public class CLCSFast {
     if (arr[m][n] > max_CLCS)
       max_CLCS = arr[m][n];
 
-    findPath(m, n, mid, path);
+    findPath(m, n, mid, path, path_s);
 
     // if (mid == 5){
     //   for (int x = 0; x <= m; x++) {
@@ -150,13 +171,13 @@ public class CLCSFast {
 
   }
 
-  public static void FindShortestPath (char[] A, char[] B, int[][] path, int l, int u) {
+  public static void FindShortestPath (char[] A, char[] B, int[][] path, int[][] path_s, int l, int u) {
     if ((u-l) <= 1) 
       return;
     int mid = (l+u)/2;
-    SingleShortestPath (A, B, path, l, u, mid);
-    FindShortestPath (A, B, path, l, mid);
-    FindShortestPath (A, B, path, mid, u);
+    SingleShortestPath (A, B, path, path_s, l, u, mid);
+    FindShortestPath (A, B, path, path_s, l, mid);
+    FindShortestPath (A, B, path, path_s, mid, u);
   }
 
   public static void main(String[] args) {
@@ -169,18 +190,20 @@ public class CLCSFast {
       B = s.next();
       int m = A.length(), n = B.length();
       int path[][] = new int[m+1][2*m+1];
+      int path_s[][] = new int[m+1][2*m+1];
       for (int i = 0; i < m+1; i++) {
         for (int j = 0; j < 2*m+1; j++) {
           path[i][j] = -1;
+          path_s[i][j] = -1;
         }
       }
-      SingleShortestPathNoBoundary(A.toCharArray(), B.toCharArray(), path);
+      SingleShortestPathNoBoundary(A.toCharArray(), B.toCharArray(), path, path_s);
       // for (int i = 0; i < 2*m+1; i++) System.out.print(path[0][i] + " ");
       // System.out.println();
       // for (int i = 0; i < 2*m+1; i++) System.out.print(path[m][i] + " ");
       // System.out.println();
 
-      FindShortestPath(A.toCharArray(), B.toCharArray(), path, 0, m);
+      FindShortestPath(A.toCharArray(), B.toCharArray(), path, path_s, 0, m);
 
       //  for (int i = 0; i < 2*m+1; i++) System.out.print(path[0][i] + " ");
       // System.out.println();
