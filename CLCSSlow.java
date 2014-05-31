@@ -40,8 +40,6 @@ public class CLCSSlow {
         int temp = LCS(rotate(A, i).toCharArray(), B.toCharArray());
         if (temp > max_LCS)
           max_LCS = temp;
-        if (temp == 22)
-          System.out.println (rotate(A,i));
       }
       System.out.println(max_LCS);
     }
