@@ -2,21 +2,18 @@ import java.util.*;
 import java.lang.String;
 
 public class CLCSFast1 {
-  static int arr[][] = new int[2048][2048];
+  static int[][] arr = new int[2048][2048];
   static int max_CLCS = 0;
-  static int lpath[][];
-  static int rpath[][];
-  // static char[] A, B;
 
-  public static String rotate (String s, int k){
-    String a = s.substring(k, s.length());
-    String b = s.substring(0, k);
-    return a.concat(b);
 
+  static void printP(int[][] path, int mid,int m) {
+    for (int i = 0; i < 2*m+1; i ++)
+      System.out.print(path[mid][i]);
+    System.out.println();
   }
-
-  public static void SingleShortestPathNoBoundary(char[] A, char[] B) {
-    int m = A.length, n = B.length;
+  
+    public static void InitialCLCS(char[] A, char[] B, int[][] path, int[][] path_s) {
+    int m = A.length/2, n = B.length;
     int i, j;
     for (i = 0; i <= m; i++) arr[i][0] = 0;
     for (j = 0; j <= n; j++) arr[0][j] = 0;
@@ -30,210 +27,146 @@ public class CLCSFast1 {
 
     if (arr[m][n] > max_CLCS)
       max_CLCS = arr[m][n];
-
-    // for (int x = 0; x <= m; x++) {
-    //   for (int y = 0; y <= n; y++) {
-    //     System.out.print(arr[x][y]+" ");
-    //   }
-    //   System.out.println();
-    // }
-
-    findPath(m, n, 0);
-    findPath(m, n, m);
-  }
-
-  public static void findPath(int m, int n, int k) {
-    int i = m, j = n;
-
-    while (!(i == 0 && j == 0)) {
-      lpath[k][i+k] = j;
-      if (rpath[k][i+k] < 0) rpath[k][i+k] = j;
-      if (i > 0 && arr[i][j] == arr[i-1][j]) 
+    
+    i = m; j = n;
+    while (i > 0 && j > 0) {  
+      path_s[0][i] = j;     
+      if (arr[i][j] == arr[i-1][j]) {
         i--;
-      else if (j > 0 && arr[i][j] == arr[i][j-1])
-        j--;
+        path[0][i] = j;
+      }
+      else if (arr[i][j] == arr[i][j-1])
+        j--; 
       else {
         i--;
         j--;
+        path[0][i] = j;
       }
     }
-    
-    for (i = 0; i < k; i++) {
-      rpath[k][i] = 0;
-      lpath[k][i] = 0;
-    } 
-    if (rpath[k][k] < 0) rpath[k][k] = 0;
-    lpath[k][k] = 0;
-    for (i = k+m; i < 2*m+1; i++) {
-      rpath[k][i] = n; 
-      lpath[k][i] = n;
+
+    for (i = m; i < 2*m+1; i++) {
+      path[0][i] = n;
+      path_s[0][i] = n;
     }
-    for (int x = 0; x < lpath[k].length; x++)  
-      System.out.print(lpath[k][x]+ " ");
-    System.out.println();
+    for (i = 0; i < m+1; i++) {
+      path[m][i+m] = path[0][i];
+      path_s[m][i+m] = path_s[0][i];
+    }
+
+    // printP(path_s, 0, m);
+    // printP(path_s, m, m);
+    
+  }
+
+
+  public static void findPath(char[] A,  char[] B, int mid, int[][] path, int[][] path_s, int l, int u) {
+    int m = A.length/2, n = B.length;
+    int i = m, j = n;
+
+    while (i > 0 && j > 0) {
+      int pi_1, pj_1;
+      
+      if ((j-1) < path_s[u][mid+i])
+        pj_1 = -2;
+      else
+        pj_1 = arr[i][j-1];
+      if (j > path[l][mid+i-1])
+        pi_1 = -2;
+      else
+        pi_1 = arr[i-1][j];
+
+      if (pi_1 == arr[i][j]) {
+        i--;
+        path[mid][i+mid] = j;
+        path_s[mid][i+mid] = j;
+      }
+      else if (pj_1 == arr[i][j]) {
+        j--;
+        path_s[mid][i+mid] = j;
+      }
+      else {
+        i--;
+        j--;
+        path[mid][i+mid] = j;
+        path_s[mid][i+mid] = j;
+      }
+    }
+
+    for (i = mid+m; i < 2*m+1; i++) {
+      path[mid][i] = n;
+      path_s[mid][i] = n;
+    }
+
+    // printP(path, mid, m);
+    // printP(path_s, mid, m);
 
   }
 
-  public static void SingleShortestPath(char[] A, char[] B, int l, int u, int mid) {
 
-    int m = A.length, n = B.length;
+  public static void SingleShortestPath(char[] A, char[] B, int[][] path, int[][] path_s, int l, int u, int mid) {
+    int m = A.length/2, n = B.length;
     int i, j;
-    String C = "";
-    for(i = 0; i<m; i++)
-      C = C.concat(Character.toString(A[i]));
-    C = rotate (C, mid);
-    // if (mid == 16)
-    // {
-    //   System.out.println(C);
-    //   for (int p = 0; p < 2*m+1; p++) 
-    //     System.out.print(path[l][p] + " ");
-    //   System.out.println();
-    //   for (int p = 0; p < 2*m+1; p++) 
-    //     System.out.print(path[u][p] + " ");
-    //   System.out.println();
-    // }
-    // // for (i = 0; i <= m; i++) arr[i][0] = 0;
-    // // for (j = 0; j <= n; j++) arr[0][j] = 0;
-    
-    // if (mid == 16)
-    // {
-    //   System.out.print("    ");
-    //   for (i = 1; i <= n ; i++)
-    //     System.out.print ("0 ");
-    //   System.out.println ();
-    //   for (i = 1; i <= m; i++) {
-    //     // System.out.println ((path[u][mid+i-1]+1) + " " + path[l][mid+i]);
-    //     System.out.print (C.toCharArray()[i-1] + " 0 ");
-    //     for (j = 1; j < path[u][mid+i-1]+1 ; j++)
-    //       System.out.print ("* ");
-    //     for (j = path[u][mid+i-1]+1; j <= path[l][mid+i]; j++) {
-    //     // for (j = 1; j <= n; j++) { 
-    //       if ((j-1) < path[u][mid+i-1]+1)
-    //         arr[i][j] = arr[i-1][j];
-    //       else if (j > path[l][mid+i-1])
-    //         arr[i][j] = arr[i][j-1];
-    //       else
-    //         arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
-    //       if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path[u][mid+i-2]+1 && (j-1) <= path[l][mid+i-1] 
-    //         || ((j-1) == 0 || (i-1) == 0)))
-    //         {
-    //           arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
-    //           // System.out.println ("i= "+i +"; j= "+ j);  
-    //           // System.out.println (C.toCharArray()[i-1] + ";" + B[j-1]);
-    //         }
-    //       System.out.print (arr[i][j]+" ");
-    //       // System.out.println (C.toCharArray()[i-1]+" "+B[j-1]);
-    //     }
-    //     for (j = path[l][mid+i]+1 ; j <= n ; j++)
-    //       System.out.print ("* ");
-    //     System.out.println();
-    //   }
-    // }
-    // else
-    // {
-      // for (i = 1; i <= m; i++) {
-      //   for (j = path[u][mid+i-1]+1; j <= path[l][mid+i]; j++) {
-      //     if ((j-1) < path[u][mid+i-1]+1)
-      //       arr[i][j] = arr[i-1][j];
-      //     else if (j > path[l][mid+i-1])
-      //       arr[i][j] = arr[i][j-1];
-      //     else
-      //       arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
-      //     if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= path[u][mid+i-2]+1 && (j-1) <= path[l][mid+i-1] 
-      //       || ((j-1) == 0 || (i-1) == 0))) 
-      //     {
-      //       arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
-      //     }
-      //   }
-      // }
-    // }
-
-
-
-      for (i = 1; i <= m; i++) {
-        for (j = lpath[u][mid+i]; j <= rpath[l][mid+i]; j++) {
-          if ((j-1) < lpath[u][mid+i])
-            arr[i][j] = arr[i-1][j];
-          else if (j > rpath[l][mid+i-1])
-            arr[i][j] = arr[i][j-1];
+    for (i = 1; i <= m; i++) {
+        for (j = Math.max(path_s[u][mid+i],1); j <= path[l][mid+i]; j++) {
+          int ai_1, aj_1, aij_1;
+          if ((j-1) < path_s[u][mid+i])
+            aj_1 = -2;
           else
-            arr[i][j] = Math.max(arr[i-1][j], arr[i][j-1]);
-          if (C.toCharArray()[i-1] == B[j-1] && ((j-1) >= lpath[u][mid+i-1] && (j-1) <= rpath[l][mid+i-1] 
-            || ((j-1) == 0 || (i-1) == 0))) 
-          {
+            aj_1 = arr[i][j-1];
+          if (j > path[l][mid+i-1])
+            ai_1 = -2;
+          else
+            ai_1 = arr[i-1][j];
+      
+          arr[i][j] = Math.max(ai_1, aj_1);
+
+          if (A[i-1+mid] == B[j-1] && ((j-1) >= path_s[u][mid+i-1] && (j-1) <= path[l][mid+i-1])) 
             arr[i][j] = Math.max(arr[i][j], arr[i-1][j-1]+1);
-          }
         }
-      }
+    }
 
-
-
-
-
-
-
-    // if (arr[m][n] > max_CLCS)
-    //   max_CLCS = arr[m][n];
-
-    // findPath(m, n, mid);
-
-    // if (mid == 5){
-      for (int x = 0; x <= m; x++) {
-        for (int y = 0; y <= n; y++) {
-          System.out.print(arr[x][y]+" ");
-        }
-        System.out.println();
-      }
+    //  for (int h = 0; h <= m; h ++) {
+    //   for(int k = 0; k <= n; k ++ )
+    //     System.out.print(arr[h][k]);
+    //   System.out.println();
     // }
+    if (arr[m][n] > max_CLCS)
+      max_CLCS = arr[m][n];
+
+    findPath(A, B, mid, path, path_s, l, u);
+
 
   }
 
-  public static void FindShortestPath (char[] A, char[] B, int l, int u) {
+
+
+  public static void FindShortestPath (char[] A, char[] B, int[][] path, int[][] path_s, int l, int u) {
     if ((u-l) <= 1) 
       return;
     int mid = (l+u)/2;
-    SingleShortestPath (A, B, l, u, mid);
-    // FindShortestPath (A, B, l, mid);
-    // FindShortestPath (A, B, mid, u);
+    SingleShortestPath (A, B, path, path_s, l, u, mid);
+    FindShortestPath (A, B, path, path_s, l, mid);
+    FindShortestPath (A, B, path, path_s, mid, u);
   }
 
   public static void main(String[] args) {
     Scanner s = new Scanner(System.in);
     int T = s.nextInt();
     String A, B;
-    for (int tc = 0; tc < 1; tc++) {
+    for (int tc = 0; tc < T; tc++) {
       max_CLCS = 0;
-      A = s.next();
+      String temp = s.next();
+      A = temp + temp;
       B = s.next();
-      int m = A.length(), n = B.length();
-      lpath = new int[m+1][2*m+1];
-      rpath = new int[m+1][2*m+1];
-      for (int i = 0; i < m+1; i++) {
-        for (int j = 0; j < 2*m+1; j++) {
-          lpath[i][j] = -1;
-          rpath[i][j] = -1;
-        }
-      }
-      SingleShortestPathNoBoundary(A.toCharArray(), B.toCharArray());
-      // for (int i = 0; i < 2*m+1; i++) System.out.print(path[0][i] + " ");
-      // System.out.println();
-      // for (int i = 0; i < 2*m+1; i++) System.out.print(path[m][i] + " ");
-      // System.out.println();
+      int m = A.length()/2, n = B.length();
+      int path[][] = new int[m+1][2*m+1];
+      int path_s[][] = new int[m+1][2*m+1];
 
-      FindShortestPath(A.toCharArray(), B.toCharArray(), 0, m);
+      InitialCLCS(A.toCharArray(), B.toCharArray(), path, path_s);
+      // SingleShortestPath(A.toCharArray(), B.toCharArray(), path, path_s, 0, m, m/2);
+      FindShortestPath(A.toCharArray(), B.toCharArray(), path, path_s, 0, m);
 
-      //  for (int i = 0; i < 2*m+1; i++) System.out.print(path[0][i] + " ");
-      // System.out.println();
-      // for (int i = 0; i < 2*m+1; i++) System.out.print(path[m][i] + " ");
-      // System.out.println();
-      // int max_LCS = 0;
-      // for (int i = 0; i < A.length(); i++){
-      //   int temp = LCS(rotate(A, i).toCharArray(), B.toCharArray());
-      //   if (temp > max_LCS)
-      //     max_LCS = temp;
-      //   // System.out.println (rotate(A,i));
-      // }
-      // System.out.println(max_CLCS);
+      System.out.println(max_CLCS);
     }
   }
 }

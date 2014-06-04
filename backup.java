@@ -1,7 +1,7 @@
 import java.util.*;
 
 
-public class LCS {
+public class backup {
   static int[][] arr = new int[4096][2048];
   static char[] A, B; 
   static int [][] p = new int [2048][4096]; 
