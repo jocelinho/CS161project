@@ -64,31 +64,18 @@ public class CLCSFast1 {
     int i = m, j = n;
 
     while (i > 0 && j > 0) {
-      int pi_1, pj_1;
-      
-      if ((j-1) < path_s[u][mid+i])
-        pj_1 = -2;
-      else
-        pj_1 = arr[i][j-1];
-      if (j > path[l][mid+i-1])
-        pi_1 = -2;
-      else
-        pi_1 = arr[i-1][j];
-
-      if (pi_1 == arr[i][j]) {
+      path_s[mid][i+mid] = j;
+      if (arr[i-1][j] == arr[i][j] && j <= path[l][mid+i-1]) {
         i--;
         path[mid][i+mid] = j;
-        path_s[mid][i+mid] = j;
       }
-      else if (pj_1 == arr[i][j]) {
+      else if (arr[i][j-1] == arr[i][j] && (j-1) >= path_s[u][mid+i]) 
         j--;
-        path_s[mid][i+mid] = j;
-      }
+
       else {
         i--;
         j--;
         path[mid][i+mid] = j;
-        path_s[mid][i+mid] = j;
       }
     }
 
@@ -110,11 +97,11 @@ public class CLCSFast1 {
         for (j = Math.max(path_s[u][mid+i],1); j <= path[l][mid+i]; j++) {
           int ai_1, aj_1, aij_1;
           if ((j-1) < path_s[u][mid+i])
-            aj_1 = -2;
+            aj_1 = -1;
           else
             aj_1 = arr[i][j-1];
           if (j > path[l][mid+i-1])
-            ai_1 = -2;
+            ai_1 = -1;
           else
             ai_1 = arr[i-1][j];
       
